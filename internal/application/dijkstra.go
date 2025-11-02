@@ -30,6 +30,10 @@ func NewDijkstraSolver() *DijkstraSolver {
 	return &DijkstraSolver{}
 }
 
+// Solve maze with Dijkstra algorithm.
+// Each vertex stores the minimal distance from the start point.
+// Vertices are processed using a priority queue sorted by this distance.
+// The algorithm updates distances and parents until the end point is reached or no path exists.
 func (s *DijkstraSolver) Solve(start, end domain.Point, maze *domain.Maze) (*domain.Maze, error) {
 	if maze.Cells[start.X][start.Y] == domain.Wall || maze.Cells[end.X][end.Y] == domain.Wall {
 		return nil, errors.New("invalid start/end points")

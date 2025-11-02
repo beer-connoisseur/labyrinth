@@ -17,6 +17,9 @@ func NewPrimGen() *PrimGen {
 	}
 }
 
+// Generate maze with Prim algorithm.
+// We have an array of walls that are available for cutting, and we randomly select a wall.
+// Once the wall is cut, new walls are added to the array that the new cell is adjacent to.
 func (g *PrimGen) Generate(width, height int) (*domain.Maze, error) {
 	maze, err := domain.NewMaze(width, height)
 	if err != nil {
@@ -31,6 +34,9 @@ func (g *PrimGen) Generate(width, height int) (*domain.Maze, error) {
 		walls, wall = removeRandomElement(g.r, walls)
 		surfaces := getSurfaces(wall.X, wall.Y, maze)
 
+		// We check that there is only one passable cell around the wall we want to break through.
+		// Or if there are only two opposite passable walls around the wall,
+		// then with a certain probability, CycleProbability, we will still cut through the wall to create a cycle
 		if len(surfaces) == 1 {
 			if !isDiagonalConnections(surfaces[0], wall, maze) {
 				maze.Cells[wall.X][wall.Y] = getRandomSurface(g.r)

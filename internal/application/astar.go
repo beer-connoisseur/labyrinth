@@ -30,6 +30,12 @@ func NewAStarSolver() *AStarSolver {
 	return &AStarSolver{}
 }
 
+// Solve maze with AStar algorithm.
+// During the algorithm operation for vertices the function f(v)=g(v)+h(v) is calculated. Where
+// g(v) is the lowest cost of the path to v from the initial vertex,
+// h(v) is the heuristic approximation of the cost of the path from v to the final goal.
+// Vertices are processed using a priority queue sorted by f function.
+// The algorithm updates functions and parents until the end point is reached or no path exists.
 func (s *AStarSolver) Solve(start, end domain.Point, maze *domain.Maze) (*domain.Maze, error) {
 	if maze.Cells[start.X][start.Y] == domain.Wall || maze.Cells[end.X][end.Y] == domain.Wall {
 		return nil, errors.New("invalid start/end points")
