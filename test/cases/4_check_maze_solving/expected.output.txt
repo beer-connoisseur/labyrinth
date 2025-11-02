@@ -1,0 +1,1 @@
+solution was saved: tests/tmp/4_check_maze_solving.txt
