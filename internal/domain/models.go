@@ -1,0 +1,37 @@
+package domain
+
+type CellType int
+
+const (
+	Space CellType = iota
+	Wall
+	Path
+	Coin
+	Tree
+	Rock
+	Start
+	End
+)
+
+const (
+	GenerationStartPointX = 1
+	GenerationStartPointY = 1
+)
+
+const (
+	CycleProbability = 0.1
+	CoinProbability  = 0.4
+	TreeProbability  = 0.2
+	RockProbability  = 0.1
+)
+
+var Directions = [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}
+
+type Point struct {
+	X, Y int
+}
+
+type Maze struct {
+	Cells         [][]CellType
+	Width, Height int
+}
