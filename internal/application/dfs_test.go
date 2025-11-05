@@ -12,9 +12,33 @@ func TestDFSGen_Generate(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:    "valid small maze 5x5",
+			name:    "valid maze 5x5",
 			width:   5,
 			height:  5,
+			wantErr: false,
+		},
+		{
+			name:    "valid maze 3x5 odd args",
+			width:   3,
+			height:  5,
+			wantErr: false,
+		},
+		{
+			name:    "valid maze 5x3 odd args",
+			width:   5,
+			height:  3,
+			wantErr: false,
+		},
+		{
+			name:    "valid maze 3x5 even args",
+			width:   2,
+			height:  4,
+			wantErr: false,
+		},
+		{
+			name:    "valid maze 5x3 even args",
+			width:   4,
+			height:  2,
 			wantErr: false,
 		},
 		{
@@ -43,8 +67,15 @@ func TestDFSGen_Generate(t *testing.T) {
 				if got == nil {
 					t.Fatal("Generate() returned nil maze on success")
 				}
+
+				if tt.width%2 == 0 {
+					tt.width++
+				}
 				if got.Width != tt.width {
 					t.Errorf("wrong width: got %d, want %d", got.Width, tt.width)
+				}
+				if tt.height%2 == 0 {
+					tt.height++
 				}
 				if got.Height != tt.height {
 					t.Errorf("wrong height: got %d, want %d", got.Height, tt.height)

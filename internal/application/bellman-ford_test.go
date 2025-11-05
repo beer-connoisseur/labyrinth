@@ -7,7 +7,26 @@ import (
 	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
 )
 
-func TestAStarNode_GetCoords(t *testing.T) {
+func edgesEqualIgnoringOrder(a, b []Edge) bool {
+	if len(a) != len(b) {
+		return false
+	}
+
+	counts := make(map[Edge]int)
+	for _, p := range a {
+		counts[p]++
+	}
+	for _, p := range b {
+		if counts[p] == 0 {
+			return false
+		}
+		counts[p]--
+	}
+
+	return true
+}
+
+func TestBellmanFordNode_GetCoords(t *testing.T) {
 	tests := []struct {
 		name  string
 		point domain.Point
@@ -29,7 +48,7 @@ func TestAStarNode_GetCoords(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			n := &AStarNode{
+			n := &BellmanFordNode{
 				Point: tt.point,
 			}
 			gotX, gotY := n.GetCoords()
@@ -43,13 +62,13 @@ func TestAStarNode_GetCoords(t *testing.T) {
 	}
 }
 
-func TestAStarNode_GetParent(t *testing.T) {
-	parent := &AStarNode{Point: domain.Point{X: 1, Y: 2}}
-	child := &AStarNode{Point: domain.Point{X: 3, Y: 4}, Parent: parent}
+func TestBellmanFordNode_GetParent(t *testing.T) {
+	parent := &DijkstraNode{Point: domain.Point{X: 1, Y: 2}}
+	child := &DijkstraNode{Point: domain.Point{X: 3, Y: 4}, Parent: parent}
 
 	tests := []struct {
 		name string
-		node *AStarNode
+		node *DijkstraNode
 		want PathNode
 	}{
 		{
@@ -59,7 +78,7 @@ func TestAStarNode_GetParent(t *testing.T) {
 		},
 		{
 			name: "no parent",
-			node: &AStarNode{Point: domain.Point{X: 0, Y: 0}, Parent: nil},
+			node: &DijkstraNode{Point: domain.Point{X: 0, Y: 0}, Parent: nil},
 			want: nil,
 		},
 	}
@@ -72,7 +91,7 @@ func TestAStarNode_GetParent(t *testing.T) {
 	}
 }
 
-func TestAStarSolver_Solve(t *testing.T) {
+func TestBellmanFordSolver_Solve(t *testing.T) {
 	type args struct {
 		start domain.Point
 		end   domain.Point
@@ -271,7 +290,7 @@ func TestAStarSolver_Solve(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s := NewAStarSolver()
+			s := NewBellmanFordSolver()
 			got, err := s.Solve(tt.args.start, tt.args.end, tt.args.maze)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Solve() error = %v, wantErr %v", err, tt.wantErr)
@@ -284,44 +303,66 @@ func TestAStarSolver_Solve(t *testing.T) {
 	}
 }
 
-func TestNewAStarSolver(t *testing.T) {
+func TestNewBellmanFordSolver(t *testing.T) {
 	t.Run("creates new solver", func(t *testing.T) {
-		got := NewAStarSolver()
+		got := NewBellmanFordSolver()
 		if got == nil {
-			t.Fatal("NewAStarSolver() returned nil")
+			t.Fatal("NewBellmanFordSolver() returned nil")
 		}
 	})
 }
 
-func Test_manhattanDistance(t *testing.T) {
+func Test_buildEdges(t *testing.T) {
 	tests := []struct {
-		name       string
-		start, end domain.Point
-		want       int
+		name string
+		maze *domain.Maze
+		want []Edge
 	}{
 		{
-			name:  "same point",
-			start: domain.Point{X: 0, Y: 0},
-			end:   domain.Point{X: 0, Y: 0},
-			want:  0,
+			name: "correctness",
+			maze: &domain.Maze{
+				Cells: [][]domain.CellType{
+					{1, 1, 1, 1},
+					{1, 0, 1, 1},
+					{1, 3, 4, 1},
+					{1, 1, 1, 1},
+				},
+				Width:  2,
+				Height: 2,
+			},
+			want: []Edge{
+				{From: domain.Point{X: 1, Y: 1}, To: domain.Point{X: 2, Y: 1}, Weight: 0},
+				{From: domain.Point{X: 2, Y: 1}, To: domain.Point{X: 1, Y: 1}, Weight: 1},
+				{From: domain.Point{X: 2, Y: 1}, To: domain.Point{X: 2, Y: 2}, Weight: 5},
+				{From: domain.Point{X: 2, Y: 2}, To: domain.Point{X: 2, Y: 1}, Weight: 0},
+			},
 		},
 		{
-			name:  "different points",
-			start: domain.Point{X: 1, Y: 2},
-			end:   domain.Point{X: 6, Y: 7},
-			want:  10,
-		},
-		{
-			name:  "negative coords",
-			start: domain.Point{X: -2, Y: -3},
-			end:   domain.Point{X: 1, Y: 1},
-			want:  7,
+			name: "correctness-2",
+			maze: &domain.Maze{
+				Cells: [][]domain.CellType{
+					{1, 1, 1, 1, 1},
+					{1, 5, 3, 4, 1},
+					{1, 1, 1, 1, 1},
+				},
+				Width:  1,
+				Height: 3,
+			},
+			want: []Edge{
+				{From: domain.Point{X: 1, Y: 1}, To: domain.Point{X: 1, Y: 2}, Weight: 0},
+				{From: domain.Point{X: 1, Y: 2}, To: domain.Point{X: 1, Y: 1}, Weight: 10},
+				{From: domain.Point{X: 1, Y: 2}, To: domain.Point{X: 1, Y: 3}, Weight: 5},
+				{From: domain.Point{X: 1, Y: 3}, To: domain.Point{X: 1, Y: 2}, Weight: 0},
+			},
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := manhattanDistance(tt.start, tt.end); got != tt.want {
-				t.Errorf("manhattanDistance() = %v, want %v", got, tt.want)
+			got := buildEdges(tt.maze)
+
+			if !edgesEqualIgnoringOrder(got, tt.want) {
+				t.Errorf("buildEdges() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -134,6 +134,54 @@ func TestDijkstraSolver_Solve(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "correctness coin cycle",
+			args: args{
+				maze: &domain.Maze{
+					//🧱🧱🧱🧱🧱🧱🧱
+					//🧱🪙🧱⬛🌵🌵🧱
+					//🧱⬛🧱🪙🧱🪙🧱
+					//🧱🪙🪙🪙🧱🪙🧱
+					//🧱🪙🧱🪙🧱🌵🧱
+					//🧱🪙🪙🪙⬛⬛🧱
+					//🧱🧱🧱🧱🧱🧱🧱
+					Cells: [][]domain.CellType{
+						{1, 1, 1, 1, 1, 1, 1},
+						{1, 3, 0, 3, 3, 3, 1},
+						{1, 1, 1, 3, 1, 3, 1},
+						{1, 0, 3, 3, 3, 3, 1},
+						{1, 4, 1, 1, 1, 0, 1},
+						{1, 4, 3, 3, 4, 0, 1},
+						{1, 1, 1, 1, 1, 1, 1},
+					},
+					Width:  5,
+					Height: 5,
+				},
+				start: domain.Point{X: 3, Y: 1},
+				end:   domain.Point{X: 5, Y: 3},
+			},
+			//🧱🧱🧱🧱🧱🧱🧱
+			//🧱🪙🧱🏡🌵🌵🧱
+			//🧱⬛🧱⭕🧱🪙🧱
+			//🧱🪙🪙⭕🧱🏁🧱
+			//🧱🪙🧱⭕🧱⭕🧱
+			//🧱🪙🪙⭕⭕⭕🧱
+			//🧱🧱🧱🧱🧱🧱🧱
+			want: &domain.Maze{
+				Cells: [][]domain.CellType{
+					{1, 1, 1, 1, 1, 1, 1},
+					{1, 3, 0, 3, 3, 3, 1},
+					{1, 1, 1, 3, 1, 3, 1},
+					{1, 6, 2, 2, 2, 2, 1},
+					{1, 4, 1, 1, 1, 2, 1},
+					{1, 4, 3, 7, 2, 2, 1},
+					{1, 1, 1, 1, 1, 1, 1},
+				},
+				Width:  5,
+				Height: 5,
+			},
+			wantErr: false,
+		},
+		{
 			name: "invalid start",
 			args: args{
 				maze: &domain.Maze{

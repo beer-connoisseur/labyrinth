@@ -24,7 +24,7 @@ Commands:
 
 func HandleGenerate(args []string) {
 	fs := flag.NewFlagSet("generate", flag.ExitOnError)
-	algorithm := fs.StringP("algorithm", "a", "", "Algorithm for generation (dfs, prim)")
+	algorithm := fs.StringP("algorithm", "a", "", "Algorithm for generation (dfs, prim, kruskal)")
 	width := fs.IntP("width", "w", 0, "Width of the maze")
 	height := fs.IntP("height", "h", 0, "Height of the maze")
 	output := fs.StringP("output", "o", "", "Output file name [optional]")
@@ -47,6 +47,8 @@ func HandleGenerate(args []string) {
 		gen = application.NewDFSGen()
 	case "prim":
 		gen = application.NewPrimGen()
+	case "kruskal":
+		gen = application.NewKruskalGen()
 	default:
 		fs.PrintDefaults()
 		return
@@ -75,7 +77,7 @@ func HandleGenerate(args []string) {
 
 func HandleSolve(args []string) {
 	fs := flag.NewFlagSet("solve", flag.ExitOnError)
-	algorithm := fs.String("algorithm", "", "Algorithm for solving (astar, dijkstra")
+	algorithm := fs.String("algorithm", "", "Algorithm for solving (astar, dijkstra, bellman-ford")
 	file := fs.String("file", "", "Input maze file")
 	start := fs.String("start", "", "Start point (x,y)")
 	end := fs.String("end", "", "End point (x,y)")
@@ -99,6 +101,8 @@ func HandleSolve(args []string) {
 		solver = application.NewAStarSolver()
 	case "dijkstra":
 		solver = application.NewDijkstraSolver()
+	case "bellman-ford":
+		solver = application.NewBellmanFordSolver()
 	default:
 		fs.PrintDefaults()
 		return
