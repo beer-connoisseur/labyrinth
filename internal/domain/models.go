@@ -25,6 +25,8 @@ const (
 	RockProbability  = 0.1
 )
 
+const FilePermissions = 0644
+
 var Directions = [][2]int{{1, 0}, {-1, 0}, {0, 1}, {0, -1}}
 
 type Point struct {

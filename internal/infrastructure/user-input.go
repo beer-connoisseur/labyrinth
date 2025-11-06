@@ -55,6 +55,10 @@ func HandleGenerate(args []string) {
 	}
 
 	maze, err := gen.Generate(*width, *height)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	var mazeDraw string
 	if *unicodeFlag {
@@ -64,7 +68,7 @@ func HandleGenerate(args []string) {
 	}
 
 	if *output != "" {
-		err := os.WriteFile(*output, []byte(mazeDraw), 0644)
+		err := os.WriteFile(*output, []byte(mazeDraw), domain.FilePermissions)
 		if err != nil {
 			fmt.Println("file write error:", err)
 			return
@@ -140,7 +144,7 @@ func HandleSolve(args []string) {
 	}
 
 	if *output != "" {
-		err := os.WriteFile(*output, []byte(mazeDraw), 0644)
+		err := os.WriteFile(*output, []byte(mazeDraw), domain.FilePermissions)
 		if err != nil {
 			fmt.Println("file write error:", err)
 			return
