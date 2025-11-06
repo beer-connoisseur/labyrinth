@@ -62,7 +62,7 @@ func (s *BellmanFordSolver) Solve(start, end domain.Point, maze *domain.Maze) (*
 	}
 	nodes[start].Dist = 0
 
-	for i := 0; i < len(edges)-1; i++ {
+	for i := 0; i < len(nodes)-1; i++ {
 		changed := false
 		for _, e := range edges {
 			if nodes[e.From].Dist == math.MaxInt {
