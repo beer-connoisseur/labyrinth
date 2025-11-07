@@ -1,10 +1,8 @@
 package application
 
 import (
-	"math/rand"
-	"time"
-
 	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
+	"math/rand"
 )
 
 type DFSGen struct {
@@ -12,9 +10,10 @@ type DFSGen struct {
 	r       *rand.Rand
 }
 
-func NewDFSGen() *DFSGen {
+func NewDFSGen(seed ...int64) *DFSGen {
+	src := checkSeed(seed...)
 	return &DFSGen{
-		r: rand.New(rand.NewSource(time.Now().UnixNano())),
+		r: rand.New(src),
 	}
 }
 

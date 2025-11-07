@@ -1,19 +1,18 @@
 package application
 
 import (
-	"math/rand"
-	"time"
-
 	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
+	"math/rand"
 )
 
 type PrimGen struct {
 	r *rand.Rand
 }
 
-func NewPrimGen() *PrimGen {
+func NewPrimGen(seed ...int64) *PrimGen {
+	src := checkSeed(seed...)
 	return &PrimGen{
-		r: rand.New(rand.NewSource(time.Now().UnixNano())),
+		r: rand.New(src),
 	}
 }
 

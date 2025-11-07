@@ -3,6 +3,7 @@ package infrastructure
 import (
 	"errors"
 	"fmt"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -29,6 +30,7 @@ func HandleGenerate(args []string) {
 	height := fs.IntP("height", "h", 0, "Height of the maze")
 	output := fs.StringP("output", "o", "", "Output file name [optional]")
 	unicodeFlag := fs.BoolP("unicode", "u", false, "Image of the maze with unicode")
+	seedStr := fs.StringP("seed", "s", "", "Seed of the maze")
 
 	err := fs.Parse(args)
 	if err != nil {
@@ -41,14 +43,23 @@ func HandleGenerate(args []string) {
 		return
 	}
 
+	var seed []int64
+	if *seedStr != "" {
+		seedInt, err := strconv.ParseInt(*seedStr, 10, 64)
+		if err != nil {
+			log.Fatalf("invalid seed: %v", err)
+		}
+		seed = append(seed, seedInt)
+	}
+
 	var gen application.Generator
 	switch *algorithm {
 	case "dfs":
-		gen = application.NewDFSGen()
+		gen = application.NewDFSGen(seed...)
 	case "prim":
-		gen = application.NewPrimGen()
+		gen = application.NewPrimGen(seed...)
 	case "kruskal":
-		gen = application.NewKruskalGen()
+		gen = application.NewKruskalGen(seed...)
 	default:
 		fs.PrintDefaults()
 		return

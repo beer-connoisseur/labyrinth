@@ -1,6 +1,7 @@
 package application
 
 import (
+	"reflect"
 	"testing"
 
 	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
@@ -96,6 +97,53 @@ func TestPrimGen_Generate(t *testing.T) {
 				if len(got.Cells) == 0 {
 					t.Errorf("maze has no cells")
 				}
+			}
+		})
+	}
+}
+
+func TestPrimGen_deterministic(t *testing.T) {
+	tests := []struct {
+		name        string
+		width       int
+		height      int
+		seeds       []int64
+		expectEqual bool
+	}{
+		{
+			name:        "same seed",
+			width:       10,
+			height:      10,
+			seeds:       []int64{42, 42},
+			expectEqual: true,
+		},
+		{
+			name:        "different seeds",
+			width:       10,
+			height:      10,
+			seeds:       []int64{1, 2},
+			expectEqual: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gen1 := NewPrimGen(tt.seeds[0])
+			gen2 := NewPrimGen(tt.seeds[1])
+
+			maze1, err1 := gen1.Generate(tt.width, tt.height)
+			maze2, err2 := gen2.Generate(tt.width, tt.height)
+
+			if err1 != nil || err2 != nil {
+				t.Fatalf("unexpected error: %v / %v", err1, err2)
+			}
+
+			equal := reflect.DeepEqual(maze1.Cells, maze2.Cells)
+			if tt.expectEqual && !equal {
+				t.Errorf("expected mazes to be equal for seeds %v", tt.seeds)
+			}
+			if !tt.expectEqual && equal {
+				t.Errorf("expected mazes to differ for seeds %v", tt.seeds)
 			}
 		})
 	}

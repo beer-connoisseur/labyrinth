@@ -1,10 +1,8 @@
 package application
 
 import (
-	"math/rand"
-	"time"
-
 	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
+	"math/rand"
 )
 
 type KruskalGen struct {
@@ -12,9 +10,10 @@ type KruskalGen struct {
 	r           *rand.Rand
 }
 
-func NewKruskalGen() *KruskalGen {
+func NewKruskalGen(seed ...int64) *KruskalGen {
+	src := checkSeed(seed...)
 	return &KruskalGen{
-		r: rand.New(rand.NewSource(time.Now().UnixNano())),
+		r: rand.New(src),
 	}
 }
 

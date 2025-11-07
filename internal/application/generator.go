@@ -2,6 +2,7 @@ package application
 
 import (
 	"math/rand"
+	"time"
 
 	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
 )
@@ -62,4 +63,14 @@ func removeRandomElement[T any](r *rand.Rand, slice []T) ([]T, T) {
 	newSlice := slice[:len(slice)-1]
 
 	return newSlice, element
+}
+
+func checkSeed(seed ...int64) rand.Source {
+	var src rand.Source
+	if len(seed) > 0 {
+		src = rand.NewSource(seed[0])
+	} else {
+		src = rand.NewSource(time.Now().UnixNano())
+	}
+	return src
 }
