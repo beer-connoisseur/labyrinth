@@ -1,6 +1,7 @@
 package application
 
 import (
+	"errors"
 	"math/rand"
 	"time"
 
@@ -73,4 +74,11 @@ func checkSeed(seed ...int64) rand.Source {
 		src = rand.NewSource(time.Now().UnixNano())
 	}
 	return src
+}
+
+func checkGenStartPoint(x, y int, maze *domain.Maze) error {
+	if !maze.IsInsideTheMaze(x, y) {
+		return errors.New("bad start point for generation")
+	}
+	return nil
 }

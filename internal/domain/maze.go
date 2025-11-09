@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+// NewMaze creates a field that includes outer walls of size 1,
+// so the logic associated with the field will have 1-indexing
 func NewMaze(width, height int) (*Maze, error) {
 	if width <= 0 || height <= 0 {
 		return nil, errors.New("invalid maze attributes")

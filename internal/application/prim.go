@@ -1,8 +1,9 @@
 package application
 
 import (
-	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
 	"math/rand"
+
+	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
 )
 
 type PrimGen struct {
@@ -25,6 +26,9 @@ func (g *PrimGen) Generate(width, height int) (*domain.Maze, error) {
 		return nil, err
 	}
 
+	if err = checkGenStartPoint(domain.GenerationStartPointX, domain.GenerationStartPointY, maze); err != nil {
+		return nil, err
+	}
 	maze.Cells[domain.GenerationStartPointX][domain.GenerationStartPointY] = getRandomSurface(g.r)
 	walls := getWalls(domain.GenerationStartPointX, domain.GenerationStartPointY, maze)
 

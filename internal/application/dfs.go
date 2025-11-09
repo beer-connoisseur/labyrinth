@@ -1,8 +1,9 @@
 package application
 
 import (
-	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
 	"math/rand"
+
+	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
 )
 
 type DFSGen struct {
@@ -27,11 +28,15 @@ func (g *DFSGen) Generate(width, height int) (*domain.Maze, error) {
 	if err != nil {
 		return nil, err
 	}
+	// 1-indexing
 	g.visited = make([][]bool, width+2)
 	for i := range g.visited {
 		g.visited[i] = make([]bool, height+2)
 	}
 
+	if err = checkGenStartPoint(domain.GenerationStartPointX, domain.GenerationStartPointY, maze); err != nil {
+		return nil, err
+	}
 	g.dfs(domain.GenerationStartPointX, domain.GenerationStartPointY, maze)
 
 	return maze, nil

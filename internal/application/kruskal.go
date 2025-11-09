@@ -1,8 +1,9 @@
 package application
 
 import (
-	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
 	"math/rand"
+
+	"gitlab.education.tbank.ru/backend-academy-go-2025/homeworks/hw2-labyrinths/internal/domain"
 )
 
 type KruskalGen struct {
@@ -44,6 +45,7 @@ func (g *KruskalGen) Generate(width, height int) (*domain.Maze, error) {
 
 	var walls []domain.Point
 	g.disjointSet = make(map[domain.Point]domain.Point)
+	// 1-indexing
 	for x := 1; x <= maze.Width; x = x + 2 {
 		for y := 1; y <= maze.Height; y = y + 2 {
 			maze.Cells[x][y] = getRandomSurface(g.r)

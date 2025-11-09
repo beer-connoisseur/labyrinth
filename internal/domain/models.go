@@ -13,6 +13,7 @@ const (
 	End
 )
 
+// When setting the starting point of the generation, keep in mind that the maze field has 1-indexing
 const (
 	GenerationStartPointX = 1
 	GenerationStartPointY = 1
