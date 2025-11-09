@@ -42,11 +42,9 @@ func NewBellmanFordSolver() *BellmanFordSolver {
 // The process continues until distances stabilize, guaranteeing the shortest path
 // to all reachable vertices, including the end point if it exists.
 func (s *BellmanFordSolver) Solve(start, end domain.Point, maze *domain.Maze) (*domain.Maze, error) {
-	if maze.Cells[start.X][start.Y] == domain.Wall || maze.Cells[end.X][end.Y] == domain.Wall {
-		return nil, errors.New("invalid start/end points")
+	if err := checkAndSetStartEnd(start, end, maze); err != nil {
+		return nil, err
 	}
-	maze.Cells[start.X][start.Y] = domain.Start
-	maze.Cells[end.X][end.Y] = domain.End
 
 	nodes := make(map[domain.Point]*BellmanFordNode)
 

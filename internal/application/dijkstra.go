@@ -35,12 +35,11 @@ func NewDijkstraSolver() *DijkstraSolver {
 // Vertices are processed using a priority queue sorted by this distance.
 // The algorithm updates distances and parents until the end point is reached or no path exists.
 func (s *DijkstraSolver) Solve(start, end domain.Point, maze *domain.Maze) (*domain.Maze, error) {
-	if maze.Cells[start.X][start.Y] == domain.Wall || maze.Cells[end.X][end.Y] == domain.Wall {
-		return nil, errors.New("invalid start/end points")
+	if err := checkAndSetStartEnd(start, end, maze); err != nil {
+		return nil, err
 	}
-	maze.Cells[start.X][start.Y] = domain.Start
-	maze.Cells[end.X][end.Y] = domain.End
 
+	// 1-indexing
 	d := make([][]int, maze.Width+2)
 	for i := range d {
 		d[i] = make([]int, maze.Height+2)
